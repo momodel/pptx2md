@@ -32,6 +32,7 @@ def parse_args() -> ConversionConfig:
     arg_parser.add_argument('-i', '--image-dir', type=Path, help='where to put images extracted')
     arg_parser.add_argument('--image-width', type=int, help='maximum image with in px')
     arg_parser.add_argument('--disable-image', action="store_true", help='disable image extraction')
+    arg_parser.add_argument('--disable-video', action="store_true", help='disable video extraction')
     arg_parser.add_argument('--disable-wmf',
                             action="store_true",
                             help='keep wmf formatted image untouched(avoid exceptions under linux)')
@@ -41,6 +42,7 @@ def parse_args() -> ConversionConfig:
                             help='do not attempt to escape special characters')
     arg_parser.add_argument('--disable-notes', action="store_true", help='do not add presenter notes')
     arg_parser.add_argument('--enable-slides', action="store_true", help='deliniate slides `\n---\n`')
+    arg_parser.add_argument('--debug', action="store_true", help='enable debug mode with more detailed logging')
     arg_parser.add_argument('--try-multi-column', action="store_true", help='try to detect multi-column slides')
     arg_parser.add_argument('--wiki', action="store_true", help='generate output as wikitext(TiddlyWiki)')
     arg_parser.add_argument('--mdk', action="store_true", help='generate output as madoko markdown')
@@ -62,6 +64,15 @@ def parse_args() -> ConversionConfig:
         extension = '.tid' if args.wiki else '.qmd' if args.qmd else '.md'
         args.output = Path(f'out{extension}')
 
+    # 如果启用了调试模式，设置日志级别为 DEBUG
+    if args.debug:
+        import logging
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.getLogger("pptx2md").setLevel(logging.DEBUG)
+        # 记录每个shape的详细信息
+        for handler in logging.getLogger().handlers:
+            handler.setLevel(logging.DEBUG)
+
     return ConversionConfig(
         pptx_path=args.pptx_path,
         output_path=args.output,
@@ -69,11 +80,13 @@ def parse_args() -> ConversionConfig:
         title_path=args.title,
         image_width=args.image_width,
         disable_image=args.disable_image,
+        disable_video=args.disable_video,
         disable_wmf=args.disable_wmf,
         disable_color=args.disable_color,
         disable_escaping=args.disable_escaping,
         disable_notes=args.disable_notes,
         enable_slides=args.enable_slides,
+        debug=args.debug,
         try_multi_column=args.try_multi_column,
         is_wiki=args.wiki,
         is_mdk=args.mdk,

@@ -1,6 +1,6 @@
 # PPTX2MD
 
-[![Downloads](https://pepy.tech/badge/pptx2md)](https://pepy.tech/project/pptx2md)
+[![Downloads](https://pepy.tech/badge/pptx-to-md)](https://pepy.tech/project/pptx-to-md)
 
 A tool to convert Powerpoint pptx file into markdown.
 
@@ -29,7 +29,7 @@ _Please star this repo if you like it!_
 You need to have _[Python](https://www.python.org/)_ with version later than __3.10__ and _pip_ installed on your system, then run in the terminal:
 
 ```sh
-pip install pptx2md
+pip install pptx-to-md
 ```
 
 ### Usage
@@ -43,9 +43,9 @@ __Note:__ older .ppt files are not supported, convert them to the new .pptx vers
 __Upgrade & Remove:__
 
 ```sh
-pip install --upgrade pptx2md
+pip install --upgrade pptx-to-md
 
-pip uninstall pptx2md
+pip uninstall pptx-to-md
 ```
 
 ## Custom Titles

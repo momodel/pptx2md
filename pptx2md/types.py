@@ -42,6 +42,9 @@ class ConversionConfig(BaseModel):
     disable_image: bool = False
     """Disable image extraction"""
 
+    disable_video: bool = False
+    """Disable video extraction"""
+
     disable_wmf: bool = False
     """Keep wmf formatted image untouched (avoid exceptions under linux)"""
 
@@ -56,6 +59,9 @@ class ConversionConfig(BaseModel):
 
     enable_slides: bool = False
     """Deliniate slides with `\n---\n`"""
+
+    debug: bool = False
+    """Enable debug mode with more detailed logging"""
 
     is_wiki: bool = False
     """Generate output as wikitext (TiddlyWiki)"""
@@ -79,7 +85,10 @@ class ConversionConfig(BaseModel):
     """Try to detect multi-column slides"""
 
     keep_similar_titles: bool = False
-    """Keep similar titles (allow for repeated slide titles - One or more - Add (cont.) to the title)"""
+    """Keep similar titles instead of skipping them"""
+    
+    slide_titles: dict[int, str] = {}
+    """存储幻灯片编号到标题的映射"""
 
 
 class ElementType(str, Enum):
@@ -88,6 +97,7 @@ class ElementType(str, Enum):
     Paragraph = "Paragraph"
     Image = "Image"
     Table = "Table"
+    Video = "Video"
 
 
 class TextStyle(BaseModel):
@@ -140,12 +150,21 @@ class ImageElement(BaseElement):
     alt_text: str = ""  # For accessibility
 
 
+class VideoElement(BaseElement):
+    type: ElementType = ElementType.Video
+    path: str
+    width: Optional[int] = None
+    height: Optional[int] = None
+    mime_type: str = ""  # 视频的MIME类型
+    is_external: bool = False  # 是否是外部链接视频
+
+
 class TableElement(BaseElement):
     type: ElementType = ElementType.Table
     content: List[List[List[TextRun]]]  # rows -> cols -> rich text
 
 
-SlideElement = Union[TitleElement, ListItemElement, ParagraphElement, ImageElement, TableElement]
+SlideElement = Union[TitleElement, ListItemElement, ParagraphElement, ImageElement, VideoElement, TableElement]
 
 
 class SlideType(str, Enum):
