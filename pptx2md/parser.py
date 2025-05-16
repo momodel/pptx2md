@@ -174,7 +174,14 @@ def get_text_runs(para) -> List[TextRun]:
         if is_strong(run.font):
             result.style.is_strong = True
         if run.font.color.type == MSO_COLOR_TYPE.RGB:
-            result.style.color_rgb = run.font.color.rgb
+            rgb = run.font.color.rgb
+            # 统一转为元组
+            if hasattr(rgb, 'to_rgb'):
+                result.style.color_rgb = rgb.to_rgb()
+            else:
+                # 兼容字符串形式
+                hexstr = str(rgb)
+                result.style.color_rgb = tuple(int(hexstr[i:i+2], 16) for i in (0, 2, 4))
         runs.append(result)
     return runs
 
